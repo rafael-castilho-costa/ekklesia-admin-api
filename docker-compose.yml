@@ -7,9 +7,10 @@ services:
     container_name: ekklesia-postgres
     restart: always
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       POSTGRES_DB: ekklesia_admin
-      POSTGRES_USER: ekklesia_user
-      POSTGRES_PASSWORD: ekklesia_pass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
     volumes:
