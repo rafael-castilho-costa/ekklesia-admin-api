@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: ekklesia-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ekklesia_admin
+      POSTGRES_USER: ekklesia_user
+      POSTGRES_PASSWORD: ekklesia_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - ekklesia_postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: ekklesia-admin-api
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ekklesia_admin
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "7070:7070"
+
+volumes:
+  ekklesia_postgres_data:
