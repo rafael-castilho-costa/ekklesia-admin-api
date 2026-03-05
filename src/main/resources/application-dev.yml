@@ -34,3 +34,7 @@ app:
     allowed-origins:
       - http://localhost:4200
       - http://localhost:3000
+
+jwt:
+  secret: "k9G2+fR8Xy7p3vQq4W8sT2bN1yV6cR0dH5LqP4jK8sM="        # deve ter >=32 caracteres
+  expirationMs: 3600000
