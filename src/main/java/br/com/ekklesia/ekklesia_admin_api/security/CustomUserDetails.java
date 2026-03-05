@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -32,6 +31,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
+    }
+
+    public Long getChurchId() {
+        return user.getChurch().getId();
     }
 
     @Override

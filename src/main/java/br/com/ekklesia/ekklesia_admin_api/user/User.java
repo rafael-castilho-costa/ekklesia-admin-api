@@ -1,13 +1,12 @@
 package br.com.ekklesia.ekklesia_admin_api.user;
 
+import br.com.ekklesia.ekklesia_admin_api.church.Church;
 import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.AccessProfileRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -34,6 +33,10 @@ public class User {
 
     @Column(nullable = false)
     private boolean enabled = true;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "church_id", nullable = false)
+    private Church church;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
