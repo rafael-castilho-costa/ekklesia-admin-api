@@ -1,5 +1,6 @@
 package br.com.ekklesia.ekklesia_admin_api.security;
 
+import br.com.ekklesia.ekklesia_admin_api.tenant.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,6 +47,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwt = authHeader.substring(7);
         username = jwtService.extractUsername(jwt);
+        Long churchId = jwtService.extractChurchId(jwt);
+
+        TenantContext.setChurchId(churchId);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

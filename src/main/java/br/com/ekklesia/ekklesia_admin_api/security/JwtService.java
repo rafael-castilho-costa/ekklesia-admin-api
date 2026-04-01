@@ -1,13 +1,10 @@
 package br.com.ekklesia.ekklesia_admin_api.security;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,17 +30,23 @@ public class JwtService {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Long churchId) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("role", userDetails.getAuthorities().stream()
+                .claim("role", userDetails.getAuthorities()
+                        .stream()
                         .findFirst()
                         .map(auth -> auth.getAuthority())
                         .orElse(null))
+                .claim("churchId", churchId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public Long extractChurchId(String token) {
+        return extractAllClaims(token).get("churchId", long.class);
     }
 
     public String extractUsername(String token) {

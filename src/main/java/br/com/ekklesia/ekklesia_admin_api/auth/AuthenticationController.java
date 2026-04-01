@@ -1,5 +1,6 @@
 package br.com.ekklesia.ekklesia_admin_api.auth;
 
+import br.com.ekklesia.ekklesia_admin_api.security.CustomUserDetails;
 import br.com.ekklesia.ekklesia_admin_api.security.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +37,9 @@ public class AuthenticationController {
 
         UserDetails userDetails =
                 userDetailsService.loadUserByUsername(request.email());
-        String token = jwtService.generateToken(userDetails);
+        CustomUserDetails customUser = (CustomUserDetails) userDetails;
+        Long churchId = customUser.getChurchId();
+        String token = jwtService.generateToken(userDetails, churchId);
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 

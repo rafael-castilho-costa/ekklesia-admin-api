@@ -16,6 +16,14 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    public Long getChurchId() {
+        return user.getChurch().getId();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
@@ -31,10 +39,6 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
-    }
-
-    public Long getChurchId() {
-        return user.getChurch().getId();
     }
 
     @Override

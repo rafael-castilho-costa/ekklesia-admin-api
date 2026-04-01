@@ -1,7 +1,6 @@
 package br.com.ekklesia.ekklesia_admin_api.user;
 
-import br.com.ekklesia.ekklesia_admin_api.church.Church;
-import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.AccessProfileRole;
+import br.com.ekklesia.ekklesia_admin_api.domain.vo.entity.shared.persona.Persona;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,35 +10,20 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "users")
+@Table(name = "ek_users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "persona_id", nullable = false, unique = true)
+    private Persona persona;
 
-    @Column(nullable = false, length = 150)
-    private String name;
-
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(name = "email", nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AccessProfileRole role;
+    @Column(name = "is_active")
+    private boolean active = true;
 
-    @Column(nullable = false)
-    private boolean enabled = true;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "church_id", nullable = false)
-    private Church church;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    public User() {}
 }
