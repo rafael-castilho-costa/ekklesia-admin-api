@@ -1,5 +1,6 @@
 package br.com.ekklesia.ekklesia_admin_api.domain.vo.entity.shared.persona;
 
+import br.com.ekklesia.ekklesia_admin_api.church.Church;
 import br.com.ekklesia.ekklesia_admin_api.domain.vo.base.BaseEntity;
 import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.MaritalStatus;
 import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.PersonaType;
@@ -15,16 +16,19 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "ek_persona")
 public class Persona extends BaseEntity implements Serializable {
+    @ManyToOne
+    @JoinColumn(name = "church_id")
+    private Church church;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "persona_type")
     private PersonaType personaType;
 
-    @Column(name = "name", length = 200)
-    private String name;
-
     @Column(name = "tax_id", length = 14)
     private String taxId;
+
+    @Column(name = "name", length = 200)
+    private String name;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;

@@ -17,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public Long getChurchId() {
-        return user.getChurch().getId();
+        return user.getPersona().getChurch().getId();
     }
 
     public User getUser() {
@@ -27,7 +27,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                new SimpleGrantedAuthority("ROLE_" + user.getRoles())
         );
     }
 
@@ -56,8 +56,7 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return user.isEnabled();
+    public boolean isActive() {
+        return user.isActive();
     }
 }

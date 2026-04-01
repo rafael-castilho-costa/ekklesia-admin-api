@@ -23,6 +23,11 @@ public enum PersonaType implements Enumerable {
     }
 
     @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
     public EnumDto enumerable() {
         return new EnumDto(this.name(), this.getDescription());
     }
