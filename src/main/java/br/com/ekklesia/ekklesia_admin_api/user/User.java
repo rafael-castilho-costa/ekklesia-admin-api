@@ -31,7 +31,7 @@ public class User {
     @Column(name = "is_active")
     private boolean active = true;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "ek_user_role",
             joinColumns = @JoinColumn(name = "user_id"),

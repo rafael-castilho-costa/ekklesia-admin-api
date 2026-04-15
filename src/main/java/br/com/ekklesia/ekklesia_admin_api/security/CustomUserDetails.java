@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -26,9 +26,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRoles())
-        );
+        return user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
@@ -56,7 +57,8 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public boolean isActive() {
+    @Override
+    public boolean isEnabled() {
         return user.isActive();
     }
 }

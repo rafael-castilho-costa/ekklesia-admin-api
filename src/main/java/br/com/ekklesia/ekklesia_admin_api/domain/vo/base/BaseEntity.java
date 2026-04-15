@@ -29,15 +29,15 @@ public class BaseEntity implements Serializable {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
+    @Override
     public boolean equals(Object object) {
-        BaseEntity other = (BaseEntity) object;
-
         if (this == object) {
             return true;
         }
         if (object == null || getClass() != object.getClass()) {
             return  false;
         }
+        BaseEntity other = (BaseEntity) object;
         if (id == null) {
             return other.id == null;
         } else {

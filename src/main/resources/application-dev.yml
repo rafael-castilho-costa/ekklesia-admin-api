@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -32,8 +32,21 @@ springdoc:
 app:
   cors:
     allowed-origins:
+      - http://localhost:54898
+      - http://localhost:50898
       - http://localhost:4200
       - http://localhost:3000
+  bootstrap:
+    admin:
+      email: admin@ekklesia.com
+      password: 123456
+      name: Administrador
+      tax-id: 12345678901
+    church:
+      name: Assembleia de Deus Missao Subsede Jardim Todos os Santos
+      cnpj: 57166972000178
+      city: Senador Canedo
+      state: GO
 
 jwt:
   secret: "k9G2+fR8Xy7p3vQq4W8sT2bN1yV6cR0dH5LqP4jK8sM="        # deve ter >=32 caracteres

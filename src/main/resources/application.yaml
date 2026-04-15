@@ -4,13 +4,12 @@ server:
 spring:
   application:
     name: ekklesia-admin-api
-
   profiles:
-    active: dev   # padrão
+    default: dev
 
 jwt:
-  secret: your-super-secret-key-change-this
-  expiration: 86400000
+  secret: ${JWT_SECRET:change-this-secret-key-with-at-least-32-bytes}
+  expirationMs: ${JWT_EXPIRATION_MS:86400000}
 
 springdoc:
   api-docs:

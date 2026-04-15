@@ -1,18 +1,19 @@
 package br.com.ekklesia.ekklesia_admin_api.domain.vo.entity.member;
 
-import lombok.Getter;
-import lombok.Setter;
+import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.Ministry;
+import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.StatusMember;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-@Getter
-@Setter
-public class MemberRequest {
+import java.time.LocalDate;
 
-    private Integer personaId;
-
-    public Integer getPersonaId() {
-        return personaId;
-    }
-    public void setPersonaId(Integer personaId) {
-        this.personaId = personaId;
-    }
+public record MemberRequest(
+        @NotNull Integer personaId,
+        LocalDate membershipDate,
+        LocalDate baptismDate,
+        Boolean baptized,
+        Ministry ministry,
+        StatusMember statusMember,
+        @Size(max = 4000) String notes
+) {
 }
