@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import br.com.ekklesia.ekklesia_admin_api.domain.vo.enumeration.StatusMember;
 
 import java.util.List;
 
@@ -18,8 +19,11 @@ public class MemberController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
-    public List<MemberResponse> list() {
-        return memberService.list();
+    public List<MemberResponse> list(
+            @RequestParam(required = false) StatusMember statusMember,
+            @RequestParam(required = false) String search
+    ) {
+        return memberService.list(statusMember, search);
     }
 
     @GetMapping("/{id}")

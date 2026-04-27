@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public record PersonaRequest(
-        @NotNull Long churchId,
+        Long churchId,
         @NotNull PersonaType personaType,
         @Pattern(regexp = "\\d{11}|\\d{14}") String taxId,
         @NotBlank @Size(max = 200) String name,

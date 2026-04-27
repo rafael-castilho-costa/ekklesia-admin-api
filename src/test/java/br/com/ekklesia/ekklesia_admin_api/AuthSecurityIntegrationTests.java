@@ -49,6 +49,8 @@ class AuthSecurityIntegrationTests {
     @Autowired
     private ChurchRepository churchRepository;
 
+    private Long churchId;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
@@ -62,6 +64,7 @@ class AuthSecurityIntegrationTests {
         church.setCity("Goiania");
         church.setState("GO");
         church = churchRepository.save(church);
+        churchId = church.getId();
 
         Role adminRole = createRole("ROLE_ADMIN");
         Role secretaryRole = createRole("ROLE_SECRETARY");
@@ -104,13 +107,36 @@ class AuthSecurityIntegrationTests {
     }
 
     @Test
-    void shouldReturnCurrentAuthenticatedUser() throws Exception {
+    void shouldRequireTenantHeaderForProtectedEndpoints() throws Exception {
         String token = loginAndGetToken("admin@ekklesia.com", "123456");
 
         mockMvc.perform(get("/auth/me")
                         .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Header X-Church-Id is required."));
+    }
+
+    @Test
+    void shouldRejectAccessWhenTenantHeaderDoesNotMatchUserChurch() throws Exception {
+        String token = loginAndGetToken("admin@ekklesia.com", "123456");
+
+        mockMvc.perform(get("/auth/me")
+                        .header("Authorization", "Bearer " + token)
+                        .header("X-Church-Id", churchId + 1))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Access denied for the informed church."));
+    }
+
+    @Test
+    void shouldReturnCurrentAuthenticatedUser() throws Exception {
+        String token = loginAndGetToken("admin@ekklesia.com", "123456");
+
+        mockMvc.perform(get("/auth/me")
+                        .header("Authorization", "Bearer " + token)
+                        .header("X-Church-Id", churchId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("admin@ekklesia.com"))
+                .andExpect(jsonPath("$.churchId").value(churchId))
                 .andExpect(jsonPath("$.churchName").value("Igreja Teste"))
                 .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN"));
     }
@@ -121,6 +147,7 @@ class AuthSecurityIntegrationTests {
 
         mockMvc.perform(post("/churches")
                         .header("Authorization", "Bearer " + token)
+                        .header("X-Church-Id", churchId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -138,7 +165,8 @@ class AuthSecurityIntegrationTests {
         String token = loginAndGetToken("admin@ekklesia.com", "123456");
 
         mockMvc.perform(get("/metadata/enums/member-statuses")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + token)
+                        .header("X-Church-Id", churchId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].value").exists())
                 .andExpect(jsonPath("$[0].description").exists());

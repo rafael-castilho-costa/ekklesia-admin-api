@@ -4,7 +4,9 @@ import br.com.ekklesia.ekklesia_admin_api.church.Church;
 import br.com.ekklesia.ekklesia_admin_api.church.ChurchRepository;
 import br.com.ekklesia.ekklesia_admin_api.core.audit.AuditAction;
 import br.com.ekklesia.ekklesia_admin_api.core.audit.AuditLogService;
+import br.com.ekklesia.ekklesia_admin_api.exception.BusinessException;
 import br.com.ekklesia.ekklesia_admin_api.exception.ResourceNotFoundException;
+import br.com.ekklesia.ekklesia_admin_api.tenant.TenantContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,9 @@ public class PersonaService {
     private final AuditLogService auditLogService;
 
     public PersonaResponse create(PersonaRequest request) {
-        Church church = findChurch(request.churchId());
+        Long churchId = getTenantChurchId();
+        validateRequestChurch(request.churchId(), churchId);
+        Church church = findChurch(churchId);
 
         Persona persona = new Persona();
         apply(persona, request, church);
@@ -32,7 +36,7 @@ public class PersonaService {
 
     @Transactional(readOnly = true)
     public List<PersonaResponse> list() {
-        return personaRepository.findAll().stream().map(PersonaResponse::from).toList();
+        return personaRepository.findAllByChurchId(getTenantChurchId()).stream().map(PersonaResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
@@ -41,7 +45,9 @@ public class PersonaService {
     }
 
     public PersonaResponse update(Integer id, PersonaRequest request) {
-        Church church = findChurch(request.churchId());
+        Long churchId = getTenantChurchId();
+        validateRequestChurch(request.churchId(), churchId);
+        Church church = findChurch(churchId);
         Persona persona = findPersona(id);
         apply(persona, request, church);
         Persona updatedPersona = personaRepository.save(persona);
@@ -56,13 +62,27 @@ public class PersonaService {
     }
 
     private Persona findPersona(Integer id) {
-        return personaRepository.findById(id)
+        return personaRepository.findByIdAndChurchId(id, getTenantChurchId())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa nao encontrada."));
     }
 
     private Church findChurch(Long id) {
         return churchRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Igreja nao encontrada."));
+    }
+
+    private Long getTenantChurchId() {
+        Long churchId = TenantContext.getChurchId();
+        if (churchId == null) {
+            throw new BusinessException("Contexto da igreja nao informado.");
+        }
+        return churchId;
+    }
+
+    private void validateRequestChurch(Long requestChurchId, Long tenantChurchId) {
+        if (requestChurchId != null && !requestChurchId.equals(tenantChurchId)) {
+            throw new BusinessException("churchId do corpo difere do header X-Church-Id.");
+        }
     }
 
     private void apply(Persona persona, PersonaRequest request, Church church) {

@@ -46,7 +46,14 @@ public class JwtService {
     }
 
     public Long extractChurchId(String token) {
-        return extractAllClaims(token).get("churchId", long.class);
+        Object value = extractAllClaims(token).get("churchId");
+        if (value instanceof Number number) {
+            return number.longValue();
+        }
+        if (value instanceof String stringValue) {
+            return Long.valueOf(stringValue);
+        }
+        return null;
     }
 
     public String extractUsername(String token) {

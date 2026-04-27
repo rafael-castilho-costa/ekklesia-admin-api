@@ -8,9 +8,7 @@ import java.time.LocalDate;
 public record MemberResponse(
         Integer id,
         Integer personaId,
-        String personaName,
-        Long churchId,
-        String churchName,
+        MemberPersonaResponse persona,
         LocalDate membershipDate,
         LocalDate baptismDate,
         Boolean baptized,
@@ -23,9 +21,7 @@ public record MemberResponse(
         return new MemberResponse(
                 member.getId(),
                 member.getPersona().getId(),
-                member.getPersona().getName(),
-                member.getPersona().getChurch() != null ? member.getPersona().getChurch().getId() : null,
-                member.getPersona().getChurch() != null ? member.getPersona().getChurch().getName() : null,
+                MemberPersonaResponse.from(member.getPersona()),
                 member.getMembershipDate(),
                 member.getBaptismDate(),
                 member.getBaptized(),

@@ -13,7 +13,7 @@ public record MemberRequest(
         LocalDate baptismDate,
         Boolean baptized,
         Ministry ministry,
-        StatusMember statusMember,
+        @NotNull StatusMember statusMember,
         @Size(max = 4000) String notes
 ) {
 }

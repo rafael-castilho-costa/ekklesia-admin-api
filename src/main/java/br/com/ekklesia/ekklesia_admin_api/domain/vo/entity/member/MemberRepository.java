@@ -3,13 +3,16 @@ package br.com.ekklesia.ekklesia_admin_api.domain.vo.entity.member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 
-    @Override
     @EntityGraph(attributePaths = {"persona", "persona.church"})
-    java.util.Optional<Member> findById(Integer integer);
+    Optional<Member> findByIdAndPersonaChurchId(Integer id, Long churchId);
 
-    @Override
     @EntityGraph(attributePaths = {"persona", "persona.church"})
-    java.util.List<Member> findAll();
+    List<Member> findAllByPersonaChurchId(Long churchId);
+
+    Optional<Member> findByPersonaIdAndPersonaChurchId(Integer personaId, Long churchId);
 }
