@@ -13,4 +13,15 @@ public interface PersonaRepository extends JpaRepository<Persona, Integer> {
 
     @EntityGraph(attributePaths = {"church"})
     List<Persona> findAllByChurchId(Long churchId);
+
+    @EntityGraph(attributePaths = {"church"})
+    List<Persona> findAllByChurchIdOrderByIdAsc(Long churchId);
+
+    @EntityGraph(attributePaths = {"church"})
+    List<Persona> findAllByOrderByIdAsc();
+
+    @EntityGraph(attributePaths = {"church"})
+    Optional<Persona> findDetailedById(Integer id);
+
+    boolean existsByChurchId(Long churchId);
 }

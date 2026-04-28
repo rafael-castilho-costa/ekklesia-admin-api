@@ -1,5 +1,6 @@
 package br.com.ekklesia.ekklesia_admin_api.user;
 
+import br.com.ekklesia.ekklesia_admin_api.church.Church;
 import br.com.ekklesia.ekklesia_admin_api.domain.vo.entity.shared.persona.Persona;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,6 +31,14 @@ public class User {
 
     @Column(name = "is_active")
     private boolean active = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "scope", nullable = false, length = 20)
+    private UserScope scope = UserScope.TENANT;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "church_id")
+    private Church church;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

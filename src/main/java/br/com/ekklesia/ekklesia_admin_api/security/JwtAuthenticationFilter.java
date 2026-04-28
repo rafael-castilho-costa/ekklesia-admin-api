@@ -57,7 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     if (userDetails instanceof CustomUserDetails customUserDetails) {
                         Long tokenChurchId = jwtService.extractChurchId(jwt);
-                        if (!Objects.equals(tokenChurchId, customUserDetails.getChurchId())) {
+                        if (!customUserDetails.isPlatformAdmin()
+                                && !Objects.equals(tokenChurchId, customUserDetails.getChurchId())) {
                             writeUnauthorized(response, "JWT is invalid for the user church.", request.getRequestURI());
                             return;
                         }

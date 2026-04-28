@@ -9,6 +9,7 @@ import br.com.ekklesia.ekklesia_admin_api.user.Role;
 import br.com.ekklesia.ekklesia_admin_api.user.RoleRepository;
 import br.com.ekklesia.ekklesia_admin_api.user.User;
 import br.com.ekklesia.ekklesia_admin_api.user.UserRepository;
+import br.com.ekklesia.ekklesia_admin_api.user.UserScope;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -69,11 +70,10 @@ public class DevDataInitializer {
         Church church = churchRepository.findByCnpj(churchCnpj)
                 .orElseGet(this::createDefaultChurch);
 
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                .orElseGet(this::createAdminRole);
+        Role adminMasterRole = roleRepository.findByName("ROLE_ADMIN_MASTER")
+                .orElseGet(() -> createRole("ROLE_ADMIN_MASTER"));
 
         Persona persona = new Persona();
-        persona.setChurch(church);
         persona.setPersonaType(PersonaType.NATURAL_PERSON);
         persona.setTaxId(adminTaxId);
         persona.setName(adminName);
@@ -85,7 +85,9 @@ public class DevDataInitializer {
         user.setEmail(adminEmail);
         user.setPassword(passwordEncoder.encode(adminPassword));
         user.setActive(true);
-        user.setRoles(Set.of(adminRole));
+        user.setScope(UserScope.PLATFORM);
+        user.setChurch(null);
+        user.setRoles(Set.of(adminMasterRole));
         userRepository.save(user);
     }
 
@@ -98,9 +100,9 @@ public class DevDataInitializer {
         return churchRepository.save(church);
     }
 
-    private Role createAdminRole() {
+    private Role createRole(String name) {
         Role role = new Role();
-        role.setName("ROLE_ADMIN");
+        role.setName(name);
         return roleRepository.save(role);
     }
 }

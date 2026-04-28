@@ -1,6 +1,7 @@
 package br.com.ekklesia.ekklesia_admin_api.security;
 
 import br.com.ekklesia.ekklesia_admin_api.user.User;
+import br.com.ekklesia.ekklesia_admin_api.user.UserScope;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,24 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public Long getChurchId() {
-        return user.getPersona().getChurch().getId();
+        if (user.getChurch() != null) {
+            return user.getChurch().getId();
+        }
+
+        if (user.getPersona() != null && user.getPersona().getChurch() != null) {
+            return user.getPersona().getChurch().getId();
+        }
+
+        return null;
+    }
+
+    public UserScope getScope() {
+        return user.getScope();
+    }
+
+    public boolean isPlatformAdmin() {
+        return getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN_MASTER".equals(authority.getAuthority()));
     }
 
     public User getUser() {

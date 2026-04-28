@@ -34,8 +34,15 @@ public class TenantFilter extends OncePerRequestFilter {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
             if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof CustomUserDetails cud) {
+                boolean adminRoute = request.getRequestURI().startsWith("/admin/");
                 String headerValue = request.getHeader(CHURCH_ID_HEADER);
+
                 if (headerValue == null || headerValue.isBlank()) {
+                    if (cud.isPlatformAdmin() && adminRoute) {
+                        filterChain.doFilter(request, response);
+                        return;
+                    }
+
                     writeError(
                             response,
                             HttpServletResponse.SC_BAD_REQUEST,
@@ -60,7 +67,7 @@ public class TenantFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                if (!churchId.equals(cud.getChurchId())) {
+                if (!cud.isPlatformAdmin() && !churchId.equals(cud.getChurchId())) {
                     writeError(
                             response,
                             HttpServletResponse.SC_FORBIDDEN,

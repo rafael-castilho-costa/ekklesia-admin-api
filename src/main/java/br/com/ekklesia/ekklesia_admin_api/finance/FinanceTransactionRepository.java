@@ -13,4 +13,6 @@ public interface FinanceTransactionRepository extends JpaRepository<FinanceTrans
 
     @EntityGraph(attributePaths = "church")
     Optional<FinanceTransaction> findByIdAndChurchId(Integer id, Long churchId);
+
+    boolean existsByChurchId(Long churchId);
 }

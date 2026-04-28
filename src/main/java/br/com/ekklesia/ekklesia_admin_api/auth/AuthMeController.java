@@ -28,13 +28,19 @@ public class AuthMeController {
                 currentUser.getUsername(),
                 currentUser.getUser().getPersona().getName(),
                 currentUser.getUser().getPersona().getId(),
-                currentUser.getUser().getPersona().getChurch() != null
-                        ? currentUser.getUser().getPersona().getChurch().getId()
-                        : null,
-                currentUser.getUser().getPersona().getChurch() != null
-                        ? currentUser.getUser().getPersona().getChurch().getName()
-                        : null,
-                roles
+                currentUser.getUser().getChurch() != null
+                        ? currentUser.getUser().getChurch().getId()
+                        : currentUser.getUser().getPersona().getChurch() != null
+                                ? currentUser.getUser().getPersona().getChurch().getId()
+                                : null,
+                currentUser.getUser().getChurch() != null
+                        ? currentUser.getUser().getChurch().getName()
+                        : currentUser.getUser().getPersona().getChurch() != null
+                                ? currentUser.getUser().getPersona().getChurch().getName()
+                                : null,
+                roles,
+                currentUser.getScope().name(),
+                currentUser.isPlatformAdmin()
         );
     }
 }

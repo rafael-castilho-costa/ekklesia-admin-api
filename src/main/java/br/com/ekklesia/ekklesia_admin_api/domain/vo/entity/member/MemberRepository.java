@@ -15,4 +15,8 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     List<Member> findAllByPersonaChurchId(Long churchId);
 
     Optional<Member> findByPersonaIdAndPersonaChurchId(Integer personaId, Long churchId);
+
+    boolean existsByPersonaId(Integer personaId);
+
+    boolean existsByPersonaChurchId(Long churchId);
 }

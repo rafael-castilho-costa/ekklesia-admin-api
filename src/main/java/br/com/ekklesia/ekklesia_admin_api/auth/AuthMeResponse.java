@@ -9,6 +9,8 @@ public record AuthMeResponse(
         Integer personaId,
         Long churchId,
         String churchName,
-        List<String> roles
+        List<String> roles,
+        String scope,
+        boolean adminMaster
 ) {
 }
