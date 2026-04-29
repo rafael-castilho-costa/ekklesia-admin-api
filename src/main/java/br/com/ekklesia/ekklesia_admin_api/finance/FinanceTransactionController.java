@@ -24,7 +24,7 @@ public class FinanceTransactionController {
     private final FinanceTransactionService financeTransactionService;
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN', 'ROLE_SECRETARY', 'ROLE_TREASURER')")
     public List<FinanceTransactionResponse> list(
             @RequestParam(required = false) FinanceTransactionType type,
             @RequestParam(required = false) String category,
@@ -36,7 +36,7 @@ public class FinanceTransactionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN', 'ROLE_SECRETARY', 'ROLE_TREASURER')")
     public ResponseEntity<FinanceTransactionResponse> create(@Valid @RequestBody FinanceTransactionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(financeTransactionService.create(request));
     }

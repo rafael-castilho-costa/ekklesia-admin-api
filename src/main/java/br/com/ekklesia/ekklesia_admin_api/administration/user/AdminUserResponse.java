@@ -6,6 +6,7 @@ import java.util.List;
 
 public record AdminUserResponse(
         Integer id,
+        String name,
         String email,
         boolean active,
         String scope,
@@ -26,6 +27,7 @@ public record AdminUserResponse(
 
         return new AdminUserResponse(
                 user.getId(),
+                user.getPersona().getName(),
                 user.getEmail(),
                 user.isActive(),
                 user.getScope().name(),

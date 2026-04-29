@@ -16,7 +16,7 @@ import java.util.Set;
 public record AdminUserCreateRequest(
         Long churchId,
         @NotNull UserScope scope,
-        @NotNull PersonaType personaType,
+        PersonaType personaType,
         @Pattern(regexp = "\\d{11}|\\d{14}") String taxId,
         @NotBlank @Size(max = 200) String name,
         LocalDate birthDate,

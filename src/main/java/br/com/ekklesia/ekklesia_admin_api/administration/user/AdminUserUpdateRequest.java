@@ -11,6 +11,7 @@ import java.util.Set;
 public record AdminUserUpdateRequest(
         Long churchId,
         UserScope scope,
+        @Size(max = 200) String name,
         @Email @Size(max = 150) String email,
         String password,
         Boolean active,

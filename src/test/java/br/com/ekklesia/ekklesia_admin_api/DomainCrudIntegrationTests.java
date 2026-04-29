@@ -84,8 +84,13 @@ class DomainCrudIntegrationTests {
         adminRole.setName("ROLE_ADMIN");
         adminRole = roleRepository.save(adminRole);
 
+        Role treasurerRole = new Role();
+        treasurerRole.setName("ROLE_TREASURER");
+        treasurerRole = roleRepository.save(treasurerRole);
+
         createUser(churchOne, adminRole, "admin1@ekklesia.com", "123456", "Administrador Um", "12345678901");
         createUser(churchTwo, adminRole, "admin2@ekklesia.com", "123456", "Administrador Dois", "10987654321");
+        createUser(churchOne, treasurerRole, "tesouraria1@ekklesia.com", "123456", "Tesouraria Um", "12345678902");
     }
 
     @Test
@@ -350,6 +355,34 @@ class DomainCrudIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.description=='Oferta Igreja Um')]").exists())
                 .andExpect(jsonPath("$[?(@.description=='Oferta Igreja Dois')]").doesNotExist());
+    }
+
+    @Test
+    void shouldAllowTreasurerToCreateAndListFinanceTransactions() throws Exception {
+        String token = loginAndGetToken("tesouraria1@ekklesia.com", "123456");
+
+        mockMvc.perform(post("/finance/transactions")
+                        .header("Authorization", "Bearer " + token)
+                        .header("X-Church-Id", churchOneId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "type": "INCOME",
+                                  "description": "Oferta Tesouraria",
+                                  "category": "Ofertas",
+                                  "paymentMethod": "PIX",
+                                  "amount": 1200,
+                                  "transactionDate": "2026-04-29",
+                                  "notes": null
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/finance/transactions")
+                        .header("Authorization", "Bearer " + token)
+                        .header("X-Church-Id", churchOneId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.description=='Oferta Tesouraria')]").exists());
     }
 
     private Church createChurch(String name, String cnpj) {

@@ -17,31 +17,31 @@ public class PersonaController {
     private final PersonaService personaService;
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN', 'ROLE_SECRETARY')")
     public List<PersonaResponse> list() {
         return personaService.list();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN', 'ROLE_SECRETARY')")
     public PersonaResponse getById(@PathVariable Integer id) {
         return personaService.getById(id);
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN', 'ROLE_SECRETARY')")
     public ResponseEntity<PersonaResponse> create(@Valid @RequestBody PersonaRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(personaService.create(request));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SECRETARY')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN', 'ROLE_SECRETARY')")
     public PersonaResponse update(@PathVariable Integer id, @Valid @RequestBody PersonaRequest request) {
         return personaService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN_MASTER', 'ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         personaService.delete(id);
         return ResponseEntity.noContent().build();

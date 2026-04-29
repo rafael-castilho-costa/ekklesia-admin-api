@@ -79,6 +79,9 @@ public class AdminUserService {
         if (request.email() != null && !request.email().isBlank()) {
             user.setEmail(request.email());
         }
+        if (request.name() != null && !request.name().isBlank()) {
+            user.getPersona().setName(request.name());
+        }
         if (request.password() != null && !request.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
